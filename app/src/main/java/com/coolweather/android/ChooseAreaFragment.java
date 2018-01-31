@@ -36,6 +36,8 @@ import okhttp3.Response;
 
 public class ChooseAreaFragment extends Fragment {
 
+    private static final String TAG = "ChooseAreaFragment";
+
     public static final int LEVEL_PROVINCE = 0;
 
     public static final int LEVEL_CITY = 1;
@@ -110,7 +112,6 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(position).getWeatherId();
-
                     if (getActivity() instanceof MainActivity) {
                         Intent intent = new Intent(getActivity(), WeatherActivity.class);
                         intent.putExtra("weather_id", weatherId);
@@ -122,8 +123,6 @@ public class ChooseAreaFragment extends Fragment {
                         activity.swipeRefresh.setRefreshing(true);
                         activity.requestWeather(weatherId);
                     }
-
-
                 }
             }
         });
@@ -140,9 +139,8 @@ public class ChooseAreaFragment extends Fragment {
         queryProvinces();
     }
 
-
     /**
-     * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器查询
+     * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询。
      */
     private void queryProvinces() {
         titleText.setText("中国");
@@ -163,7 +161,7 @@ public class ChooseAreaFragment extends Fragment {
     }
 
     /**
-     * 查询选中省内所有的市，优先从数据库查询，如果没有查询到再去服务器上查询
+     * 查询选中省内所有的市，优先从数据库查询，如果没有查询到再去服务器上查询。
      */
     private void queryCities() {
         titleText.setText(selectedProvince.getProvinceName());
@@ -185,7 +183,7 @@ public class ChooseAreaFragment extends Fragment {
     }
 
     /**
-     * 查询选中市内所有的县，优先从数据库查询，如果没有查询到再去服务器上查询
+     * 查询选中市内所有的县，优先从数据库查询，如果没有查询到再去服务器上查询。
      */
     private void queryCounties() {
         titleText.setText(selectedCity.getCityName());
@@ -208,7 +206,7 @@ public class ChooseAreaFragment extends Fragment {
     }
 
     /**
-     * 根据传入的地址和类型从服务器上查询省市县数据
+     * 根据传入的地址和类型从服务器上查询省市县数据。
      */
     private void queryFromServer(String address, final String type) {
         showProgressDialog();
@@ -234,7 +232,7 @@ public class ChooseAreaFragment extends Fragment {
                             } else if ("city".equals(type)) {
                                 queryCities();
                             } else if ("county".equals(type)) {
-                                queryCities();
+                                queryCounties();
                             }
                         }
                     });
@@ -243,7 +241,7 @@ public class ChooseAreaFragment extends Fragment {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                //  通过runOnUiThread()方法回到主线程处理逻辑
+                // 通过runOnUiThread()方法回到主线程处理逻辑
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
